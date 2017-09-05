@@ -10,3 +10,5 @@
 
 参考：
 1. 参考了这位大神的代码，文件分享功能应该还会参考 https://github.com/mayubao/Kuaichuan
+2. 参考博客 http://www.jianshu.com/p/089fb79e308b
+
