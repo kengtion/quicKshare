@@ -49,16 +49,12 @@ public class MiniServer {
     private ExecutorService threadPool = Executors.newFixedThreadPool(5);
     private Handler handler;
     private List<Socket> clients = new ArrayList<>();
-    private List<ResponseHandler> handlers = new ArrayList<>();
 
     public MiniServer(int port , Handler handler){
         this.port = port;
         this.handler = handler;
     }
 
-    public void register(ResponseHandler handler){
-        handlers.add(handler);
-    }
 
     public void start(){
         threadPool.submit(new Runnable() {
