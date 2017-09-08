@@ -1,5 +1,7 @@
 package cn.kengtion.fileserver;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -9,58 +11,44 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import cn.kengtion.fileserver.View.ChooseFileViewImpl;
 import cn.kengtion.socketlib.Client.Client;
 import cn.kengtion.socketlib.Server.MiniServer;
+import cn.kengtion.socketlib.Utils.LogUtils;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
-    private MiniServer miniServer;
     private Button sendButton;
     private Button beClient;
-    private TextView msgRecv;
-    private EditText msgSend;
-    private boolean isServer;
-    private Handler handler;
+    private MiniServer server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        handler = new MsgHandler();
-        msgSend = (EditText) findViewById(R.id.message_send);
         sendButton = (Button) findViewById(R.id.send);
-        msgRecv = (TextView) findViewById(R.id.message_recv);
         sendButton.setOnClickListener(this);
-        beClient = (Button) findViewById(R.id.be_client);
+        beClient = (Button) findViewById(R.id.receive);
         beClient.setOnClickListener(this);
+    }
+
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        LogUtils.d("MainActivity" , "OnPause");
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.send:
-                if (isServer)
-                    miniServer.sendMsg(msgSend.getText().toString()+"\n");
-                else {
-                    miniServer = new MiniServer(5656 , handler);
-                    miniServer.start();
-                    isServer = true;
-                }
+                startActivity(new Intent(this, ChooseFileViewImpl.class));
                 break;
-            case R.id.be_client:
-                Client client = new Client(handler);
-                client.connect();
-                isServer = false;
+            case R.id.receive:
+                server = new MiniServer(5656, new Handler());
+                server.start();
         }
     }
 
-    class MsgHandler extends Handler{
-        @Override
-        public void handleMessage(Message msg){
-            switch (msg.what){
-                case 1:
-                    msgRecv.setText(msg.obj.toString());
-            }
-        }
-    }
 }

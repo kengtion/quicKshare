@@ -7,16 +7,7 @@
     android:orientation="vertical"
     tools:context="cn.kengtion.fileserver.MainActivity">
 
-    <TextView
-        android:id="@+id/message_recv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
 
-    <EditText
-        android:id="@+id/message_send"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
     <Button
         android:id="@+id/send"
         android:text="send"
@@ -26,11 +17,18 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <Button
-        android:id="@+id/be_client"
-        android:text="be client"
+        android:id="@+id/receive"
+        android:text="receive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="0dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/file_list"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

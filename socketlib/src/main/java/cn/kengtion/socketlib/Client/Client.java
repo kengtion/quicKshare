@@ -33,6 +33,35 @@ public class Client {
     public Client(Handler handler){
         this.handler = handler;
     }
+    /*
+        第一步先发送文件列表大小,在接收端展示
+     */
+    public void sendFileListInfo(byte[] bytes){
+
+    }
+
+    public void sendMsg(byte[] bytes){
+            if(socket.isConnected()){
+                try {
+                    OutputStream os = socket.getOutputStream();
+                    os.write(bytes);
+                    os.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                try {
+                    socket = new Socket("192.168.43.1",5656);
+                    if(socket.isConnected()){
+                        OutputStream os = socket.getOutputStream();
+                        os.write(bytes);
+                        os.flush();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+    }
 
     public void connect(){
         if(threadPool == null)
@@ -42,12 +71,9 @@ public class Client {
             public void run() {
                 try {
                     socket = new Socket("192.168.43.1",5656);
-                    if(socket.isConnected()){
-                        String message = "hello world @"+ Math.random()*10+"\n";
-                        OutputStream os = socket.getOutputStream();
-                        os.write(message.getBytes());
-                        os.flush();
-                    }
+                    Message message = new Message();
+                    message.what = 0;
+                    handler.sendMessage(message);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

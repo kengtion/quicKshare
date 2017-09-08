@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size">15dp</dimen>
+    <dimen name="file_margin">10dp</dimen>
+    <dimen name="file_height">80dp</dimen>
+    <dimen name="file_icon_size">60dp</dimen>
+    <dimen name="file_path_margin">30dp</dimen>
+</resources>

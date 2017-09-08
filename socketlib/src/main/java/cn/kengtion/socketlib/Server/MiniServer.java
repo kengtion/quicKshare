@@ -6,6 +6,8 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import cn.kengtion.socketlib.Entity.FileInfo;
+import cn.kengtion.socketlib.Utils.LogUtils;
 
 /**
  * 创建时间 2017/9/5
@@ -49,6 +54,12 @@ public class MiniServer {
     private ExecutorService threadPool = Executors.newFixedThreadPool(5);
     private Handler handler;
     private List<Socket> clients = new ArrayList<>();
+    /**
+     * 头部分割字符
+     */
+    public static final String SPERATOR = "::";
+
+    private List<FileInfo> infoList = new ArrayList<>();
 
     public MiniServer(int port , Handler handler){
         this.port = port;
@@ -66,6 +77,7 @@ public class MiniServer {
                         Socket socket = serverSocket.accept();
                         synchronized (MiniServer.class){
                             clients.add(socket);
+                            LogUtils.d(TAG,"Linked success");
                         }
                         handlerSocket(socket);
                     }
@@ -86,13 +98,19 @@ public class MiniServer {
             @Override
             public void run() {
                 try {
+                    List<FileInfo> fileInfoList = new ArrayList<FileInfo>();
                     InputStream is = socket.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(is);
-                    BufferedReader reader = new BufferedReader(isr);
-                    String result = reader.readLine();
+                    OutputStream os = new ByteArrayOutputStream();
+                    int readByte = -1;
+                    int total = 0;
+                    byte[] buffer = new byte[1];
+                    StringBuilder stringBuilder = new StringBuilder();
+                    while ((readByte = is.read())!=-1){
+                        stringBuilder.append(readByte);
+                    }
+                    os.close();
                     Message msg = new Message();
                     msg.what = 1;
-                    msg.obj = result;
                     handler.sendMessage(msg);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -100,6 +118,7 @@ public class MiniServer {
             }
         });
     }
+
 
     public void sendMsg(final String msg){
         threadPool.execute(new Runnable() {
